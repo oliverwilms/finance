@@ -438,3 +438,75 @@ if selected_id:
         e_description = st.text_input("Description", value=selected_row["description"])
         e_category = st.text_input("Category", value=selected_row["category"])
         e_amount
+
+
+
+Got it ✅ — let’s add an Excel import feature so you can upload your existing financial data directly into your PostgreSQL database from within your Streamlit app.
+This way, you can migrate your old spreadsheets into your new system in just a few clicks.
+
+1. Prepare Your Excel File
+Your Excel file should have column names matching your database table:
+date | description | category | amount
+
+Example:
+2026-08-01 | Stock Purchase | Investment | -1500.00
+2026-08-03 | Dividend       | Income     | 200.00
+2026-08-05 | Office Supplies| Expense    | -75.50
+
+
+2. Install Required Library
+Bashpip install openpyxl
+
+(openpyxl is needed for reading .xlsx files with Pandas.)
+
+3. Add Excel Import to Your Streamlit App
+Here’s the import section you can add to your existing app.py:
+Python# Excel Import Section
+st.sidebar.header("📥 Import Data from Excel")
+uploaded_file = st.sidebar.file_uploader("Choose an Excel file", type=["xlsx"])
+
+if uploaded_file is not None:
+    try:
+        # Read Excel into DataFrame
+        excel_df = pd.read_excel(uploaded_file)
+
+        # Validate required columns
+        required_cols = {"date", "description", "category", "amount"}
+        if required_cols.issubset(set(excel_df.columns)):
+            # Insert each row into PostgreSQL
+            conn = get_connection()
+            cur = conn.cursor()
+            for _, row in excel_df.iterrows():
+                cur.execute(
+                    "INSERT INTO transactions (date, description, category, amount) VALUES (%s, %s, %s, %s)",
+                    (row["date"], row["description"], row["category"], row["amount"])
+                )
+            conn.commit()
+            cur.close()
+            conn.close()
+            st.sidebar.success("✅ Data imported successfully!")
+        else:
+            st.sidebar.error(f"⚠ Missing required columns: {required_cols - set(excel_df.columns)}")
+    except Exception as e:
+        st.sidebar.error(f"❌ Error importing file: {e}")
+
+
+4. How It Works
+
+You upload your Excel file from the sidebar.
+The app reads it into a Pandas DataFrame.
+It validates that the required columns exist.
+It inserts each row into your PostgreSQL transactions table.
+You’ll see the new data appear instantly in your dashboard.
+
+
+💡 Pro Tip:
+If you have a lot of data, we can optimize this by using bulk inserts instead of row-by-row insertion for much faster imports.
+
+If you want, I can upgrade this import feature so it:
+
+Automatically skips duplicates
+Allows CSV imports too
+Uses bulk insert for speed
+
+Do you want me to make that optimized version next?
