@@ -178,3 +178,131 @@ Live data table from PostgreSQL
 
 💡 If you want, I can extend this further so you can add new transactions directly from the Streamlit app and have them saved instantly to PostgreSQL — making it a mini financial management system.
 Do you want me to add that transaction input feature next?
+
+
+Perfect! 🚀
+Let’s turn your PostgreSQL + Streamlit dashboard into a mini financial management system where you can add new transactions directly from the app and see them update instantly.
+
+1. Updated Streamlit App with Data Entry
+Here’s the enhanced app.py:
+Pythonimport streamlit as st
+import pandas as pd
+import psycopg2
+import plotly.express as px
+from dotenv import load_dotenv
+import os
+from datetime import date
+
+# Load environment variables
+load_dotenv()
+
+# Connect to PostgreSQL
+def get_connection():
+    return psycopg2.connect(
+        dbname=os.getenv("DB_NAME"),
+        user=os.getenv("DB_USER"),
+        password=os.getenv("DB_PASSWORD"),
+        host=os.getenv("DB_HOST"),
+        port=os.getenv("DB_PORT")
+    )
+
+# Function to load data
+def load_data():
+    conn = get_connection()
+    df = pd.read_sql("SELECT * FROM transactions ORDER BY date", conn)
+    conn.close()
+    return df
+
+# Function to insert new transaction
+def add_transaction(date, description, category, amount):
+    conn = get_connection()
+    cur = conn.cursor()
+    cur.execute(
+        "INSERT INTO transactions (date, description, category, amount) VALUES (%s, %s, %s, %s)",
+        (date, description, category, amount)
+    )
+    conn.commit()
+    cur.close()
+    conn.close()
+
+# Sidebar - Add Transaction
+st.sidebar.header("➕ Add New Transaction")
+with st.sidebar.form("transaction_form"):
+    t_date = st.date_input("Date", value=date.today())
+    t_description = st.text_input("Description")
+    t_category = st.text_input("Category")
+    t_amount = st.number_input("Amount", step=0.01, format="%.2f")
+    submitted = st.form_submit_button("Add Transaction")
+    if submitted:
+        if t_description and t_category and t_amount != 0:
+            add_transaction(t_date, t_description, t_category, t_amount)
+            st.sidebar.success("✅ Transaction added successfully!")
+        else:
+            st.sidebar.error("⚠ Please fill all fields and enter a non-zero amount.")
+
+# Load and filter data
+df = load_data()
+
+st.sidebar.header("🔍 Filters")
+category_filter = st.sidebar.multiselect(
+    "Select Category",
+    options=df["category"].unique(),
+    default=df["category"].unique()
+)
+
+date_range = st.sidebar.date_input(
+    "Select Date Range",
+    [df["date"].min(), df["date"].max()]
+)
+
+filtered_df = df[
+    (df["category"].isin(category_filter)) &
+    (df["date"] >= pd.to_datetime(date_range[0])) &
+    (df["date"] <= pd.to_datetime(date_range[1]))
+]
+
+# Dashboard
+st.title("📊 Financial Data Dashboard")
+
+# Summary metrics
+total_balance = filtered_df["amount"].sum()
+total_income = filtered_df[filtered_df["amount"] > 0]["amount"].sum()
+total_expense = filtered_df[filtered_df["amount"] < 0]["amount"].sum()
+
+col1, col2, col3 = st.columns(3)
+col1.metric("💰 Total Balance", f"${total_balance:,.2f}")
+col2.metric("📈 Total Income", f"${total_income:,.2f}")
+col3.metric("📉 Total Expenses", f"${total_expense:,.2f}")
+
+# Data table
+st.subheader("📄 Transactions")
+st.dataframe(filtered_df)
+
+# Charts
+st.subheader("📅 Amount Over Time")
+fig_time = px.line(filtered_df, x="date", y="amount", color="category", markers=True)
+st.plotly_chart(fig_time, use_container_width=True)
+
+st.subheader("📊 Category Breakdown")
+fig_pie = px.pie(filtered_df, names="category", values="amount", hole=0.4)
+st.plotly_chart(fig_pie, use_container_width=True)
+
+
+2. How It Works
+
+Sidebar Form → Lets you enter a date, description, category, and amount.
+Instant Save → Data is inserted into PostgreSQL immediately.
+Auto Refresh → The dashboard reloads with the new transaction.
+
+
+3. Run the App
+Bashstreamlit run app.py
+
+You now have:
+✅ Live database connection
+✅ Interactive filters & charts
+✅ Ability to add transactions without leaving the app
+
+If you want, I can extend this even further so you can edit or delete transactions directly from the dashboard — making it a full CRUD (Create, Read, Update, Delete) financial tracker.
+Do you want me to add that edit/delete
+
