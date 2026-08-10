@@ -1,5 +1,15 @@
 # finance
 
+## Add Environment Variables
+
+Open Advanced System Settings: Navigate to Control Panel > System and Security > System > Advanced System Settings.
+
+Click on Environment Variables.
+
+Under User Variables, click New. Set the Variable Name (e.g., DB_USERNAME or DB_PASSWORD). Set the Variable Value (e.g., your database username or password).
+
+Click OK to save changes.
+
 Perfect choice ✅ — PostgreSQL is rock-solid for financial data analysis, and running it locally will give you both performance and control.
 Here’s your step-by-step guide to set up PostgreSQL locally and connect it to Streamlit:
 
