@@ -18,8 +18,15 @@ def create_database():
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
+        checknum TEXT,
         description TEXT,
-        amount REAL NOT NULL
+        vendor TEXT,
+        category TEXT,
+        subcategory TEXT,
+        account TEXT,
+        credit REAL,
+        debit REAL,
+        status TEXT
     )
     """)
     conn.commit()
