@@ -70,9 +70,9 @@ def run_analysis():
     df = df.dropna(subset=["date"])  # Remove invalid dates
 
     # Calculate totals
-    total_income = df[df["amount"] > 0]["amount"].sum()
-    total_expense = df[df["amount"] < 0]["amount"].sum()
-    net_balance = total_income + total_expense
+    total_income = df["credit"].sum()
+    total_expense = df["debit"].sum()
+    net_balance = total_income - total_expense
 
     # Monthly summary
     monthly_summary = df.groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
