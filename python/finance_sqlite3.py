@@ -96,27 +96,27 @@ def run_analysis():
     # ==============================
     # STEP 4: PLOT CHARTS
     # ==============================
-    plt.figure(figsize=(8, 5))
-    plt.plot(monthly_summary["date"], monthly_summary["amount"], marker="o", label="Net Amount")
-    plt.axhline(0, color="black", linewidth=0.8)
-    plt.title("Monthly Net Amount")
-    plt.xlabel("Month")
-    plt.ylabel("Amount ($)")
-    plt.grid(True)
-    plt.legend()
-    plt.tight_layout()
-    plt.show()
+    #plt.figure(figsize=(8, 5))
+    #plt.plot(monthly_summary["date"], monthly_summary["amount"], marker="o", label="Net Amount")
+    #plt.axhline(0, color="black", linewidth=0.8)
+    #plt.title("Monthly Net Amount")
+    #plt.xlabel("Month")
+    #plt.ylabel("Amount ($)")
+    #plt.grid(True)
+    #plt.legend()
+    #plt.tight_layout()
+    #plt.show()
 
     # Income vs Expense bar chart
-    monthly_income = df[df["amount"] > 0].groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
-    monthly_expense = df[df["amount"] < 0].groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
+    #monthly_income = df[df["amount"] > 0].groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
+    #monthly_expense = df[df["amount"] < 0].groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
 
-    monthly_income["date"] = monthly_income["date"].astype(str)
-    monthly_expense["date"] = monthly_expense["date"].astype(str)
+    #monthly_income["date"] = monthly_income["date"].astype(str)
+    #monthly_expense["date"] = monthly_expense["date"].astype(str)
 
     plt.figure(figsize=(8, 5))
-    plt.bar(monthly_income["date"], monthly_income["amount"], label="Income", color="green")
-    plt.bar(monthly_expense["date"], monthly_expense["amount"], label="Expense", color="red")
+    plt.bar(monthly_income["date"], monthly_income["credit"], label="Income", color="green")
+    plt.bar(monthly_expense["date"], monthly_expense["debit"], label="Expense", color="red")
     plt.title("Monthly Income vs Expenses")
     plt.xlabel("Month")
     plt.ylabel("Amount ($)")
