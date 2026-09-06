@@ -43,7 +43,7 @@ def import_csv_to_db():
     df = pd.read_csv(CSV_FILE)
 
     # Validate CSV columns
-    required_cols = {"date", "description", "amount"}
+    required_cols = {"date"}  #, "description", "amount"}
     if not required_cols.issubset(df.columns):
         print(f"CSV must contain columns: {required_cols}")
         return
