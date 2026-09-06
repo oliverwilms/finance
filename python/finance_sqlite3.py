@@ -75,8 +75,11 @@ def run_analysis():
     net_balance = total_income - total_expense
 
     # Monthly summary
-    monthly_summary = df.groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
-    monthly_summary["date"] = monthly_summary["date"].astype(str)
+    monthly_income = df.groupby(df["date"].dt.to_period("M"))["credit"].sum().reset_index()
+    monthly_expense = df.groupby(df["date"].dt.to_period("M"))["debit"].sum().reset_index()
+    #monthly_summary = df.groupby(df["date"].dt.to_period("M"))["amount"].sum().reset_index()
+    monthly_income["date"] = monthly_income["date"].astype(str)
+    monthly_expense["date"] = monthly_expense["date"].astype(str)
 
     conn.close()
 
@@ -87,7 +90,8 @@ def run_analysis():
     print(f"Net Balance  : ${net_balance:,.2f}")
 
     print("\n=== Monthly Summary ===")
-    print(monthly_summary.to_string(index=False))
+    print(monthly_income.to_string(index=False))
+    print(monthly_expense.to_string(index=False))
 
     # ==============================
     # STEP 4: PLOT CHARTS
