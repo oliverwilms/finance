@@ -18,7 +18,7 @@ def create_database():
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
-        check TEXT,
+        checknum TEXT,
         description TEXT,
         vendor TEXT,
         category TEXT,
