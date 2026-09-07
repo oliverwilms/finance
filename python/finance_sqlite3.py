@@ -23,6 +23,8 @@ def create_database():
         merchant TEXT,
         category TEXT,
         subcategory TEXT,
+        billpay TEXT,
+        debitcard TEXT,
         account TEXT,
         credit REAL,
         debit REAL,
@@ -40,10 +42,14 @@ def import_csv_to_db():
         print(f"CSV file '{CSV_FILE}' not found. Please create it first.")
         return
 
-    df = pd.read_csv(CSV_FILE)
+    # Specify the columns you want to import
+    columns_to_import = ['Date', 'CheckNum', 'Merchant', 'Category', 'SubCategory', 'Memo', 'Debit', 'Credit', 'BillPay', 'DebitCard', 'Account', 'Status']
+
+    # Read only the selected columns
+    df = pd.read_csv(CSV_FILE, usecols=columns_to_import)
 
     # Validate CSV columns
-    required_cols = {"Date"}  #, "description", "amount"}
+    required_cols = {"Date"}
     if not required_cols.issubset(df.columns):
         print(f"CSV must contain columns: {required_cols}")
         return
