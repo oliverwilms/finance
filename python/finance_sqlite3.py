@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # ==============================
 # CONFIGURATION
 # ==============================
-CSV_FILE = "transactions.csv"  # CSV file with: date, description, amount
+CSV_FILE = "money.csv"  # CSV file produced by excel_csv.py
 DB_FILE = "finance.db"
 
 # ==============================
