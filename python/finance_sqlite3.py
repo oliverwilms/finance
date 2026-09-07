@@ -8,6 +8,8 @@ import matplotlib.pyplot as plt
 # ==============================
 CSV_FILE = "money.csv"  # CSV file produced by excel_csv.py
 DB_FILE = "finance.db"
+# Specify the columns you want to import
+COL_LIST = ['Date', 'CheckNum', 'Merchant', 'Category', 'SubCategory', 'Memo', 'Debit', 'Credit', 'BillPay', 'DebitCard', 'Account', 'Status']
 
 # ==============================
 # STEP 1: CREATE DATABASE & TABLE
@@ -55,7 +57,20 @@ def import_csv_to_db():
         return
 
     conn = sqlite3.connect(DB_FILE)
-    df.to_sql("transactions", conn, if_exists="append", index=False)
+    cursor = conn.cursor()
+    # Insert each row with error handling
+    for row in df:
+        try:
+            # Construct the insert query dynamically based on selected columns
+            cols = ", ".join(COL_LIST)
+            placeholders = ", ".join("?" for _ in COL_LIST)
+            values = [row[col] for col in COL_LIST]
+            cursor.execute(f"INSERT INTO transactions ({cols}) VALUES ({placeholders})", values)
+            conn.commit()
+            #print(f"Inserted row: {values}")
+        except Exception as e:
+            # Handle error but continue with the next row
+            print(f"Error inserting row {row}: {e}")
     conn.close()
     print(f"Imported {len(df)} records from {CSV_FILE} into {DB_FILE}")
 
