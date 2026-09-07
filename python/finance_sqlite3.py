@@ -18,7 +18,7 @@ def create_database():
     CREATE TABLE IF NOT EXISTS transactions (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
-        checknum TEXT,
+        check TEXT,
         description TEXT,
         vendor TEXT,
         category TEXT,
@@ -43,7 +43,7 @@ def import_csv_to_db():
     df = pd.read_csv(CSV_FILE)
 
     # Validate CSV columns
-    required_cols = {"date"}  #, "description", "amount"}
+    required_cols = {"Date"}  #, "description", "amount"}
     if not required_cols.issubset(df.columns):
         print(f"CSV must contain columns: {required_cols}")
         return
