@@ -58,8 +58,8 @@ def import_csv_to_db():
 
     conn = sqlite3.connect(DB_FILE)
     cursor = conn.cursor()
-    # Insert each row with error handling
-    for row in df:
+    # Insert DataFrame rows into table
+    for _, row in df[COL_LIST].iterrows():
         try:
             # Construct the insert query dynamically based on selected columns
             cols = ", ".join(COL_LIST)
@@ -67,10 +67,14 @@ def import_csv_to_db():
             values = [row[col] for col in COL_LIST]
             cursor.execute(f"INSERT INTO transactions ({cols}) VALUES ({placeholders})", values)
             conn.commit()
-            #print(f"Inserted row: {values}")
+            print(f"Inserted row: {values}")
+            #cursor.execute('INSERT INTO users (id, name, age) VALUES (?, ?, ?)', tuple(row))
         except Exception as e:
             # Handle error but continue with the next row
             print(f"Error inserting row {row}: {e}")
+    # Commit the transaction
+    conn.commit()
+    print("Data inserted successfully.")
     conn.close()
     print(f"Imported {len(df)} records from {CSV_FILE} into {DB_FILE}")
 
