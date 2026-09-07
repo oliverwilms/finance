@@ -19,7 +19,7 @@ def create_database():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         date TEXT NOT NULL,
         checknum TEXT,
-        description TEXT,
+        memo TEXT,
         merchant TEXT,
         category TEXT,
         subcategory TEXT,
