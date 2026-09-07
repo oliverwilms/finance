@@ -20,7 +20,7 @@ def create_database():
         date TEXT NOT NULL,
         checknum TEXT,
         description TEXT,
-        vendor TEXT,
+        merchant TEXT,
         category TEXT,
         subcategory TEXT,
         account TEXT,
